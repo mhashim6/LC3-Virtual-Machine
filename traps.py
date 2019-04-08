@@ -1,5 +1,5 @@
 from memory import mem_read, mem_write, Registers, reg_read, reg_write
-from utils import sign_extend, wordOf
+from utils import sign_extend, ushort
 from enum import Enum
 
 
