@@ -1,36 +1,74 @@
 from memory import mem_read, mem_write, Registers, reg_read, reg_write
-from utils import sign_extend, ushort
+from utils import sign_extend
 from enum import Enum
+from control_unit import Halt
+import sys
 
 
 def _GETC():
     """get character from keyboard"""
-    pass
+    #we need to cast the comming char in 16-bit location
+    try: #for windows
+        import msvrt
+        return msvrt.getch()
+    except ImportError:
+        #for linux
+        import tty, termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setcbreak(fd)
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        #don't know if this gonna work
+        return ushort(ord(ch))
 
 
 def _OUT():
     """output a character"""
-    pass
-
+    sys.stdout.write(chr(mem_read(reg_read(Registers.R0))))
+    sys.stdout.flush()
 
 def _PUTS():
     """output a word string"""
-    pass
+    i = reg_read(Registers.R0)
+    ch = mem_read(i)
+    while chr(ch) != '\0': #check if the char is not null then print this char
+        sys.stdout.write(ch)
+        i += 1
+        ch = mem_read(i)
+    sys.stdout.flush()  #equal to fflush() in c
 
 
 def _IN():
     """input a string"""
-    pass
+    #get the location from mem to write in it
+    ch = map(input())
+    #implementation to map to memory
+    """ch = _GETC()
+    i = reg_read(Registers.R0)
+    while chr(ch) != '\0':
+        mem_write(i, ch)
+        i += 1"""
 
 
 def _PUTSP():
     """output a byte string"""
-    pass
+    for i in range(Registers.R0, (2**16)):
+        c = mem_read(i)
+        if c == '\0':
+            break
+        sys.stdout.write(chr(c & 0xFF))
+        char = c >> 8
+        if char:
+            sys.stdout.write(chr(char))
+    sys.stdout.flush()
 
 
 def _HALT():
     """halt the program"""
-    pass
+    raise Halt()
 
 
 class Traps(Enum):
@@ -54,3 +92,4 @@ _traps = {
 
 def trap_routine(code):
     return _traps[code]
+
