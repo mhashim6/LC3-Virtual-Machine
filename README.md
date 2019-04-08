@@ -3,7 +3,7 @@ Little Computer 3, or [LC-3](https://en.wikipedia.org/wiki/LC-3), is a type of c
 This is a Python implementation of the LC-3 virtual machine.
 
 ## Tasks
-Instructions
+### Instructions
 - [] Branch
 - [] Add
 - [] Load
@@ -18,9 +18,9 @@ Instructions
 - [] Jump
 - [] Reserved
 - [] Load effective address
-I/O
+### I/O
 - [] Memory-mapped registers
-Traps
+### Traps
 - [x] Get character from keyboard "without echod"
 - [x] Output a character
 - [x] Output a word string
