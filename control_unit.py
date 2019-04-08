@@ -134,10 +134,10 @@ _instructions = {
 
 
 def _instruction_routine(instruction):
-    opcode = opcode(instruction)
-    if opcode == OPCodes.OP_TRAP.value:  # it's a trap!
+    _opcode = opcode(instruction)
+    if _opcode == OPCodes.OP_TRAP.value:  # it's a trap!
         return lambda: trap_routine(trapcode(instruction))
-    return lambda: _instructions[OPCodes(opcode)](instruction)  # phew!
+    return lambda: _instructions[OPCodes(_opcode)](instruction)  # phew!
 
 
 def execute(instruction):
