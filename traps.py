@@ -32,7 +32,7 @@ def _PUTS():
 def _IN():
     """input a string"""
     #get string from user
-    ch_arr = list(map(ord, input()))
+    ch_arr = map(ord, list(input()))
     #get memory location to write data in
     i = reg_read(Registers.R0)
     for ch in ch_arr:
