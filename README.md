@@ -4,22 +4,22 @@ This is a Python implementation of the LC-3 virtual machine.
 
 ## Tasks
 ### Instructions
-- [] Branch
-- [] Add
-- [] Load
-- [] Store
-- [] Jump register
-- [] Bitwise AND
-- [] Load register
-- [] Store register
-- [] Bitwise NOT
-- [] Load indirect
-- [] Store indirect
-- [] Jump
-- [] Reserved
-- [] Load effective address
+- [ ] Branch
+- [ ] Add
+- [ ] Load
+- [ ] Store
+- [ ] Jump register
+- [ ] Bitwise AND
+- [ ] Load register
+- [ ] Store register
+- [ ] Bitwise NOT
+- [ ] Load indirect
+- [ ] Store indirect
+- [ ] Jump
+- [ ] Reserved
+- [ ] Load effective address
 ### I/O
-- [] Memory-mapped registers
+- [ ] Memory-mapped registers
 ### Traps
 - [x] Get character from keyboard "without echod"
 - [x] Output a character
