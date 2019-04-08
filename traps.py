@@ -1,28 +1,16 @@
 from memory import mem_read, mem_write, Registers, reg_read, reg_write
-from utils import sign_extend
+from utils import sign_extend, ushort
 from enum import Enum
 from control_unit import Halt
+from getc import getch
 import sys
 
 
 def _GETC():
     """get character from keyboard"""
     #we need to cast the comming char in 16-bit location
-    try: #for windows
-        import msvrt
-        return msvrt.getch()
-    except ImportError:
-        #for linux
-        import tty, termios
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setcbreak(fd)
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        #don't know if this gonna work
-        return ushort(ord(ch))
+    return getch()
+    
 
 
 def _OUT():
@@ -43,9 +31,15 @@ def _PUTS():
 
 def _IN():
     """input a string"""
-    #get the location from mem to write in it
-    ch = map(input())
-    #implementation to map to memory
+    #get string from user
+    ch_arr = list(map(input().split()))
+    #get memory location to write data in
+    i = reg_read(Registers.R0)
+    for ch in ch_arr:
+        while chr(ch) != '\0':
+            mem_write(ushort(i), ushort(ord(ch)))
+            i += 1
+    
     """ch = _GETC()
     i = reg_read(Registers.R0)
     while chr(ch) != '\0':
@@ -56,8 +50,8 @@ def _IN():
 def _PUTSP():
     """output a byte string"""
     for i in range(Registers.R0, (2**16)):
-        c = mem_read(i)
-        if c == '\0':
+        c = mem_read(ushort(i))
+        if chr(c) == '\0':
             break
         sys.stdout.write(chr(c & 0xFF))
         char = c >> 8
