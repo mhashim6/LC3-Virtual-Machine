@@ -26,11 +26,6 @@ class MMR(Enum):  # TODO
     KBDR = 0xFFE02  # keyboard data
 
 
-class Halt(Exception):
-    """Thrown to indicate HALT instruction has been executed."""
-    pass
-
-
 def _BR(instruction):
     """branch"""
     pass
