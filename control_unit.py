@@ -5,9 +5,19 @@ from traps import trap_routine
 
 
 class Flags(Enum):
-    FL_POS = 1 << 0  # positive
-    FL_ZRO = 1 << 1  # zero
-    FL_NEG = 1 << 2  # negative
+    POS = 1 << 0  # positive
+    ZRO = 1 << 1  # zero
+    NEG = 1 << 2  # negative
+
+
+def update_flags(reg_index):
+    reg_value = Registers(reg_index)
+    if reg_value == 0:
+        reg_write(Registers.COND, Flags.ZRO)
+    elif reg_value >> 15:  # a 1 in the left-most bit indicates negative.
+        reg_write(Registers.COND, Flags.NEG)
+    else:
+        reg_write(Registers.COND, Flags.POS)
 
 
 class MMR(Enum):  # TODO
