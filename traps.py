@@ -1,9 +1,13 @@
 from memory import mem_read, mem_write, Registers, reg_read, reg_write
 from utils import sign_extend, ushort
 from enum import Enum
-from control_unit import Halt
-from getc import getch
+from platform_getch import getch
 import sys
+
+
+class Halt(Exception):
+    """Thrown to indicate HALT instruction has been executed."""
+    pass
 
 
 def _GETC():
