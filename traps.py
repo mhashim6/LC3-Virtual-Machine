@@ -8,8 +8,8 @@ import sys
 
 def _GETC():
     """get character from keyboard"""
-    # we need to cast the comming char in 16-bit location
-    return getch()
+    ch = getch()
+    reg_write(Registers.R0, ushort(ord(ch)))
 
 
 def _OUT():
