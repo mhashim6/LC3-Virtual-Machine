@@ -1,6 +1,5 @@
 from enum import Enum
 import array
-import ctypes
 
 _MEMORY_SIZE = 2 ** 16
 _main_memory = array.array('H', [0 for i in range(_MEMORY_SIZE)])
