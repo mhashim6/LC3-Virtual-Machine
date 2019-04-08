@@ -8,9 +8,8 @@ import sys
 
 def _GETC():
     """get character from keyboard"""
-    #we need to cast the comming char in 16-bit location
+    # we need to cast the comming char in 16-bit location
     return getch()
-    
 
 
 def _OUT():
@@ -18,22 +17,23 @@ def _OUT():
     sys.stdout.write(chr(mem_read(reg_read(Registers.R0))))
     sys.stdout.flush()
 
+
 def _PUTS():
     """output a word string"""
     i = reg_read(Registers.R0)
     ch = mem_read(i)
-    while chr(ch) != '\0': #check if the char is not null then print this char
+    while chr(ch) != '\0':  # check if the char is not null then print this char
         sys.stdout.write(ch)
         i += 1
         ch = mem_read(i)
-    sys.stdout.flush()  #equal to fflush() in c
+    sys.stdout.flush()  # equal to fflush() in c
 
 
 def _IN():
     """input a string"""
-    #get string from user
+    # get string from user
     ch_arr = map(ord, list(input()))
-    #get memory location to write data in
+    # get memory location to write data in
     i = reg_read(Registers.R0)
     for ch in ch_arr:
         if chr(ch) != '\0':
@@ -41,7 +41,7 @@ def _IN():
             i += 1
         else:
             break
-    
+
     """ch = _GETC()
     i = reg_read(Registers.R0)
     while chr(ch) != '\0':
@@ -88,4 +88,3 @@ _traps = {
 
 def trap_routine(code):
     return _traps[code]
-
