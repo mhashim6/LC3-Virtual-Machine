@@ -32,13 +32,15 @@ def _PUTS():
 def _IN():
     """input a string"""
     #get string from user
-    ch_arr = list(map(input().split()))
+    ch_arr = list(map(ord, input()))
     #get memory location to write data in
     i = reg_read(Registers.R0)
     for ch in ch_arr:
-        while chr(ch) != '\0':
-            mem_write(ushort(i), ushort(ord(ch)))
+        if chr(ch) != '\0':
+            mem_write(ushort(i), ushort(ch))
             i += 1
+        else:
+            break
     
     """ch = _GETC()
     i = reg_read(Registers.R0)
