@@ -2,6 +2,7 @@ from enum import Enum
 import array
 from kbhit import check_key
 from platform_getch import getch
+from utils import ushort
 
 _MEMORY_SIZE = 2 ** 16
 _main_memory = array.array('H', [0 for i in range(_MEMORY_SIZE)])
@@ -9,8 +10,8 @@ _main_memory = array.array('H', [0 for i in range(_MEMORY_SIZE)])
 
 class MMR(Enum):
     """Memory-mapped registers """
-    KBSR = 0xFFE00  # keyboard status
-    KBDR = 0xFFE02  # keyboard data
+    KBSR = 0xFE00  # keyboard status
+    KBDR = 0xFE02  # keyboard data
 
 
 def load_image(image):
