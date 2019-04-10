@@ -84,7 +84,6 @@ def _JMP(instruction):
     """jump"""
     br = (instruction >> 6) & 0x7  # base register.
     reg_write(Registers.PC, reg_read(Registers(br)))
-    pass
 
 
 def _RES(instruction):
