@@ -82,17 +82,23 @@ def _STI(instruction):
 
 def _JMP(instruction):
     """jump"""
+    br = (instruction >> 6) & 0x7  # base register.
+    reg_write(Registers.PC, Registers(br))
     pass
 
 
 def _RES(instruction):
     """reserved"""
-    pass  # TODO throw exception here.
+    pass
 
 
 def _LEA(instruction):
     """load effective address"""
-    pass
+    dr = (instruction >> 9) & 0x7
+    pc_offset = sign_extend(instruction & 0x1ff, 9)
+    address = ushort(pc_offset + reg_read(Registers.PC))
+    reg_write(Registers(dr), address)
+    pass pass
 
 
 class OPCodes(Enum):
