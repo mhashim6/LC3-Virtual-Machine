@@ -24,8 +24,9 @@ def _BR(instruction):
     """branch"""
     pc_offset = sign_extend((instruction) & 0x1ff, 9)
     cond_flag = (instruction >> 9) & 0x7
-    if cond_flag & Registers.COND:
-        Registers.PC = ushort(Registers.PC + pc_offset)
+    if cond_flag & reg_read(Registers.COND):
+        reg_write(Registers.PC, ushort(reg_read(Registers.PC) + pc_offset))
+
 
 
 def _ADD(instruction):
@@ -39,19 +40,19 @@ def _ADD(instruction):
 
     if imm_flag:
         imm5 = sign_extend(instruction & 0x1F, 5)
-        DR = ushort(Regisers.R0 + imm5) 
+        reg_write(Registers(DR), ushort(reg_read(Regisers(DR)) + imm5))
     else:
         SR2 = instruction & 0x7
-        DR = ushort(Registers.R0 + Registers.R1)
+        reg_write(Registers(DR), ushort(reg_read(Registers(SR1)) + reg_read(Registers(SR2))))
 
     update_flags(DR)
 
 
 def _LD(instruction):
     """load"""
-    DR = (instruction >> 9) & 0x7
+     DR = (instruction >> 9) & 0x7
     pc_offset = sign_extend(instruction & 0x1ff, 9)
-    reg_write(Registers.R0,  mem_read(ushort(reg_read(Regisers.PC) + pc_offset)))
+    reg_write(Registers(DR),  mem_read(ushort(reg_read(Regisers.PC) + pc_offset)))
     update_flags(DR)
 
 
@@ -59,7 +60,7 @@ def _ST(instruction):
     """store"""
     DR = (instruction >> 9) & 0x7
     pc_offset = sign_extend(instruction & 0x1ff, 9)
-    reg_read(Registers.R0,mem_write(ushort(reg_write(Registers.PC )+ pc_offset)))
+    reg_read(Registers(DR),mem_write(ushort(reg_write(Registers.PC )+ pc_offset)))
 
 
 def _JSR(instruction):
