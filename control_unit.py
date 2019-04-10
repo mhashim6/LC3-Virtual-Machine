@@ -20,12 +20,6 @@ def update_flags(reg_index):
         reg_write(Registers.COND, Flags.POS)
 
 
-class MMR(Enum):  # TODO
-    """Memory-mapped registers """
-    KBSR = 0xFFE00  # keyboard status
-    KBDR = 0xFFE02  # keyboard data
-
-
 def _BR(instruction):
     """branch"""
     pass

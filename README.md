@@ -19,7 +19,7 @@ This is a Python implementation of the LC-3 virtual machine.
 - [ ] Reserved
 - [ ] Load effective address
 ### I/O
-- [ ] Memory-mapped registers
+- [x] Memory-mapped registers [Unix only.]
 ### Traps
 - [x] Get character from keyboard "without echod"
 - [x] Output a character

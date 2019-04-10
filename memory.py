@@ -1,8 +1,16 @@
 from enum import Enum
 import array
+from kbhit import check_key
+from platform_getch import getch
 
 _MEMORY_SIZE = 2 ** 16
 _main_memory = array.array('H', [0 for i in range(_MEMORY_SIZE)])
+
+
+class MMR(Enum):
+    """Memory-mapped registers """
+    KBSR = 0xFFE00  # keyboard status
+    KBDR = 0xFFE02  # keyboard data
 
 
 def load_image(image):
@@ -18,6 +26,12 @@ def mem_write(address, value):
 
 
 def mem_read(address):
+    if address == MMR.KBSR.value:
+        mem_write(MMR.KBSR.value, ushort(1 << 15))
+        mem_write(MMR.KBDR.value, ushort(ord(getch())))
+    else:
+        mem_write(MMR.KBSR.value, ushort(0))
+
     return _main_memory[address]
 
 
