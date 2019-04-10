@@ -93,4 +93,4 @@ _traps = {
 
 
 def trap_routine(code):
-    return _traps[code]
+    return _traps[Traps(code)]

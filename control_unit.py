@@ -83,7 +83,7 @@ def _STI(instruction):
 def _JMP(instruction):
     """jump"""
     br = (instruction >> 6) & 0x7  # base register.
-    reg_write(Registers.PC, Registers(br))
+    reg_write(Registers.PC, reg_read(Registers(br)))
     pass
 
 
@@ -98,6 +98,7 @@ def _LEA(instruction):
     pc_offset = sign_extend(instruction & 0x1ff, 9)
     address = ushort(pc_offset + reg_read(Registers.PC))
     reg_write(Registers(dr), address)
+    update_flags(dr)
 
 
 class OPCodes(Enum):
@@ -124,6 +125,7 @@ _instructions = {
     OPCodes.OP_ADD: _ADD,
     OPCodes.OP_LD: _LD,
     OPCodes.OP_ST: _ST,
+    OPCodes.OP_JSR: _JSR,
     OPCodes.OP_AND: _AND,
     OPCodes.OP_LDR: _LDR,
     OPCodes.OP_STR: _STR,
