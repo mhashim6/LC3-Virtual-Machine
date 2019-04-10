@@ -15,9 +15,9 @@ This is a Python implementation of the LC-3 virtual machine.
 - [ ] Bitwise NOT
 - [ ] Load indirect
 - [ ] Store indirect
-- [ ] Jump
-- [ ] Reserved
-- [ ] Load effective address
+- [x] Jump
+- [x] Reserved
+- [x] Load effective address
 ### I/O
 - [x] Memory-mapped registers [Unix only.]
 ### Traps
