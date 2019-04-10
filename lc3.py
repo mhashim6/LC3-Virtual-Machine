@@ -1,4 +1,5 @@
-from control_unit import Halt, execute
+from control_unit import execute
+from traps import Halt
 from memory import mem_read, mem_write, reg_read, reg_write, Registers, load_image
 from utils import ushort
 import array
