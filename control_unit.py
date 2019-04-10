@@ -98,7 +98,6 @@ def _LEA(instruction):
     pc_offset = sign_extend(instruction & 0x1ff, 9)
     address = ushort(pc_offset + reg_read(Registers.PC))
     reg_write(Registers(dr), address)
-    pass pass
 
 
 class OPCodes(Enum):
