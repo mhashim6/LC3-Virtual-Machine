@@ -82,6 +82,8 @@ def _STI(instruction):
 
 def _JMP(instruction):
     """jump"""
+    br = (instruction >> 6) & 0x7  # base register.
+    reg_write(Registers.PC, Registers(br))
     pass
 
 
