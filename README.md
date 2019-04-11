@@ -4,10 +4,10 @@ This is a Python implementation of the LC-3 virtual machine.
 
 ## Tasks
 ### Instructions
-- [ ] Branch
-- [ ] Add
-- [ ] Load
-- [ ] Store
+- [x] Branch
+- [x] Add
+- [x] Load
+- [x] Store
 - [ ] Jump register
 - [ ] Bitwise AND
 - [ ] Load register

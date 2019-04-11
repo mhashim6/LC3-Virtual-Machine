@@ -60,8 +60,7 @@ def _ST(instruction):
     """store"""
     DR = (instruction >> 9) & 0x7
     pc_offset = sign_extend(instruction & 0x1ff, 9)
-    reg_write(Registers(DR),mem_write(ushort(reg_read(Registers.PC )+ pc_offset)))
-    update_flags(DR)
+    mem_write(ushort(reg_read(Registers.PC) + pc_offset), Registers(DR))
 
 
 def _JSR(instruction):
