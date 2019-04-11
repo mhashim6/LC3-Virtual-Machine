@@ -40,7 +40,7 @@ def _ADD(instruction):
 
     if imm_flag:
         imm5 = sign_extend(instruction & 0x1F, 5)
-        reg_write(Registers(DR), ushort(reg_read(Regisers(DR)) + imm5))
+        reg_write(Registers(DR), ushort(reg_read(Regisers(SR1)) + imm5))
     else:
         SR2 = instruction & 0x7
         reg_write(Registers(DR), ushort(reg_read(Registers(SR1)) + reg_read(Registers(SR2))))
@@ -60,7 +60,7 @@ def _ST(instruction):
     """store"""
     DR = (instruction >> 9) & 0x7
     pc_offset = sign_extend(instruction & 0x1ff, 9)
-    reg_read(Registers(DR),mem_write(ushort(reg_read(Registers.PC )+ pc_offset)))
+    reg_write(Registers(DR),mem_write(ushort(reg_read(Registers.PC )+ pc_offset)))
     update_flags(DR)
 
 
