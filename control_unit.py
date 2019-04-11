@@ -22,22 +22,45 @@ def update_flags(reg_index):
 
 def _BR(instruction):
     """branch"""
-    pass
+    pc_offset = sign_extend((instruction) & 0x1ff, 9)
+    cond_flag = (instruction >> 9) & 0x7
+    if cond_flag & reg_read(Registers.COND):
+        reg_write(Registers.PC, ushort(reg_read(Registers.PC) + pc_offset))
+
 
 
 def _ADD(instruction):
     """add"""
-    pass
+    # destination register DR
+    DR = (instruction >> 9) & 0x7
+    # first operand SR1
+    SR1 = (instruction >> 6) & 0x7
+    # for immediate mode
+    imm_flag = (instruction >>5) & 0x1
+
+    if imm_flag:
+        imm5 = sign_extend(instruction & 0x1F, 5)
+        reg_write(Registers(DR), ushort(reg_read(Regisers(SR1)) + imm5))
+    else:
+        SR2 = instruction & 0x7
+        reg_write(Registers(DR), ushort(reg_read(Registers(SR1)) + reg_read(Registers(SR2))))
+
+    update_flags(DR)
 
 
 def _LD(instruction):
     """load"""
-    pass
+    DR = (instruction >> 9) & 0x7
+    pc_offset = sign_extend(instruction & 0x1ff, 9)
+    reg_write(Registers(DR),  mem_read(ushort(reg_read(Regisers.PC) + pc_offset)))
+    update_flags(DR)
 
 
 def _ST(instruction):
     """store"""
-    pass
+    DR = (instruction >> 9) & 0x7
+    pc_offset = sign_extend(instruction & 0x1ff, 9)
+    mem_write(ushort(reg_read(Registers.PC) + pc_offset), Registers(DR))
 
 
 def _JSR(instruction):
