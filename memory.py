@@ -1,7 +1,7 @@
 from enum import Enum
 import array
 from kbhit import check_key
-from platform_getch import getch
+from getch import getch
 
 _MEMORY_SIZE = 2 ** 16
 _main_memory = array.array('H', [0 for i in range(_MEMORY_SIZE)])
