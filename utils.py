@@ -11,4 +11,4 @@ def sign_extend(x, bit_count):
     tmp = x >> (bit_count - 1) & 1
     if (tmp):
         x = x | (0xFFFF << bit_count)
-    return ushort(x)
+    return x
