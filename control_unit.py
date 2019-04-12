@@ -11,13 +11,13 @@ class Flags(Enum):
 
 
 def update_flags(reg_index):
-    reg_value = Registers(reg_index)
+    reg_value = Registers(reg_index).value
     if reg_value == 0:
-        reg_write(Registers.COND, Flags.ZRO)
+        reg_write(Registers.COND, Flags.ZRO.value)
     elif reg_value >> 15:  # a 1 in the left-most bit indicates negative.
-        reg_write(Registers.COND, Flags.NEG)
+        reg_write(Registers.COND, Flags.NEG.value)
     else:
-        reg_write(Registers.COND, Flags.POS)
+        reg_write(Registers.COND, Flags.POS.value)
 
 
 def _BR(instruction):
@@ -163,7 +163,7 @@ _instructions = {
 
 def _instruction_routine(instruction):
     _opcode = opcode(instruction)
-    if _opcode == OPCodes.OP_TRAP.value:  # it's a trap!
+    if _opcode == OPCodes.OP_TRAP.value:  # oh snap, it's a trap!
         return lambda: trap_routine(trapcode(instruction))
     return lambda: _instructions[OPCodes(_opcode)](instruction)  # phew!
 
