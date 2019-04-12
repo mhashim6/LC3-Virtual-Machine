@@ -22,7 +22,7 @@ def update_flags(reg_index):
 
 def _BR(instruction):
     """branch"""
-    pc_offset = sign_extend((instruction) & 0x1ff, 9)
+    pc_offset = sign_extend(instruction & 0x1ff, 9)
     cond_flag = (instruction >> 9) & 0x7
     if cond_flag & reg_read(Registers.COND):
         reg_write(Registers.PC, (reg_read(Registers.PC) + pc_offset))
@@ -39,7 +39,7 @@ def _ADD(instruction):
 
     if imm_flag:
         imm5 = sign_extend(instruction & 0x1F, 5)
-        reg_write(Registers(DR), reg_read(Regisers(SR1)) + imm5)
+        reg_write(Registers(DR), reg_read(Registers(SR1)) + imm5)
     else:
         SR2 = instruction & 0x7
         reg_write(Registers(DR), reg_read(
@@ -52,7 +52,7 @@ def _LD(instruction):
     """load"""
     DR = (instruction >> 9) & 0x7
     pc_offset = sign_extend(instruction & 0x1ff, 9)
-    reg_write(Registers(DR),  mem_read(reg_read(Regisers.PC) + pc_offset))
+    reg_write(Registers(DR),  mem_read(reg_read(Registers.PC) + pc_offset))
     update_flags(DR)
 
 
@@ -60,12 +60,19 @@ def _ST(instruction):
     """store"""
     DR = (instruction >> 9) & 0x7
     pc_offset = sign_extend(instruction & 0x1ff, 9)
-    mem_write(reg_read(Registers.PC) + pc_offset), Registers(DR)
+    mem_write(reg_read(Registers.PC) + pc_offset), reg_read(Registers(DR))
 
 
 def _JSR(instruction):
     """jump register"""
-    pass
+    r1 = (instruction >> 6) & 0x7
+    long_pc_offset = sign_extend(instruction & 0x7ff, 11)
+    long_flag = (instruction >> 11) & 1
+    reg_write(Registers.R7, reg_read(Registers.PC))
+    if long_flag:
+        reg_write(Registers.PC, reg_read(Registers.PC) + long_pc_offset)
+    else:
+        reg_write(Registers.PC, reg_read(Registers(r1)))
 
 
 def _AND(instruction):
@@ -85,32 +92,41 @@ def _STR(instruction):
 
 def _RTI(instruction):
     raise Exception("instruction is not implemented !")
-    
 
 
 def _NOT(instruction):
-    DR = (instruction >> 9) & 0X7                                # Destination Register.
-    SR = (instruction >> 6) & 0X7                                # Source Register (register cntaining the data).
-    reg_write(Registers(DR), ~reg_read(Registers(SR)))             # every bit in the DR will equal to the flipped one with the same index in SR. 
-    update_flags(DR)                                               # store the sign of the last excuted instruction data (which is in the DR).
-    
+    # Destination Register.
+    DR = (instruction >> 9) & 0X7
+    # Source Register (register cntaining the data).
+    SR = (instruction >> 6) & 0X7
+    # every bit in the DR will equal to the flipped one with the same index in SR.
+    reg_write(Registers(DR), ~reg_read(Registers(SR)))
+    # store the sign of the last excuted instruction data (which is in the DR).
+    update_flags(DR)
 
 
 def _LDI(instruction):
-    DR = (instruction >> 9) & 0x7                                # Destenation Register.
-    PCoffset = sign_extend((instruction) & 0X1ff, 9)               # the value of what called an offset (embedded within the instruction code).
-    address = reg_read(Registers.PC) + PCoffset                    # the address of the address of the desired data.
-    reg_write(Registers(DR), mem_read(mem_read(address)))          # write the data (its address is explained in the previous line) in the register (DR).
-    update_flags(DR)                                               # store the sign of the last excuted instruction data (which is in the DR).
-    
+    # Destenation Register.
+    DR = (instruction >> 9) & 0x7
+    # the value of what called an offset (embedded within the instruction code).
+    PCoffset = sign_extend(instruction & 0X1ff, 9)
+    # the address of the address of the desired data.
+    address = reg_read(Registers.PC) + PCoffset
+    # write the data (its address is explained in the previous line) in the register (DR).
+    reg_write(Registers(DR), mem_read(mem_read(address)))
+    # store the sign of the last excuted instruction data (which is in the DR).
+    update_flags(DR)
 
 
 def _STI(instruction):
-    SR = (instruction >> 9) & 0x7                                # Source Register (the register containing the data).
-    PCoffset = sign_extend((instruction) & 0x1ff, 9)               # the value of what called an offset (embedded within the instruction code).
-    address = reg_read(Registers.PC) + PCoffset                    # the address of the address that the data will be stored at.
-    mem_write(mem_read(address), reg_read(Registers(SR)))          # write the data (stored in the SR) into the memory (the address is explained in the previous line).
-    
+    # Source Register (the register containing the data).
+    SR = (instruction >> 9) & 0x7
+    # the value of what called an offset (embedded within the instruction code).
+    PCoffset = sign_extend((instruction) & 0x1ff, 9)
+    # the address of the address that the data will be stored at.
+    address = reg_read(Registers.PC) + PCoffset
+    # write the data (stored in the SR) into the memory (the address is explained in the previous line).
+    mem_write(mem_read(address), reg_read(Registers(SR)))
 
 
 def _JMP(instruction):
@@ -133,52 +149,54 @@ def _LEA(instruction):
     update_flags(dr)
 
 
+def _TRAP(instruction):
+    trap_routine(trapcode(instruction))()
+
+
 class OPCodes(Enum):
-    OP_BR = 0       # branch
-    OP_ADD = 1      # add
-    OP_LD = 2       # load
-    OP_ST = 3       # store
-    OP_JSR = 4      # jump register
-    OP_AND = 5      # bitwise and
-    OP_LDR = 6      # load register
-    OP_STR = 7      # store register
-    OP_RTI = 8      # unused
-    OP_NOT = 9      # bitwise not
-    OP_LDI = 10     # load indirect
-    OP_STI = 11     # store indirect
-    OP_JMP = 12     # jump
-    OP_RES = 13     # reserved (unused)
-    OP_LEA = 14     # load effective address
-    OP_TRAP = 15    # execute trap
+    BR = 0       # branch
+    ADD = 1      # add
+    LD = 2       # load
+    ST = 3       # store
+    JSR = 4      # jump register
+    AND = 5      # bitwise and
+    LDR = 6      # load register
+    STR = 7      # store register
+    RTI = 8      # unused
+    NOT = 9      # bitwise not
+    LDI = 10     # load indirect
+    STI = 11     # store indirect
+    JMP = 12     # jump
+    RES = 13     # reserved (unused)
+    LEA = 14     # load effective address
+    TRAP = 15    # execute trap
 
 
 _instructions = {
-    OPCodes.OP_BR: _BR,
-    OPCodes.OP_ADD: _ADD,
-    OPCodes.OP_LD: _LD,
-    OPCodes.OP_ST: _ST,
-    OPCodes.OP_JSR: _JSR,
-    OPCodes.OP_AND: _AND,
-    OPCodes.OP_LDR: _LDR,
-    OPCodes.OP_STR: _STR,
-    OPCodes.OP_RTI: _RTI,
-    OPCodes.OP_NOT: _NOT,
-    OPCodes.OP_LDI: _LDI,
-    OPCodes.OP_STI: _STI,
-    OPCodes.OP_JMP: _JMP,
-    OPCodes.OP_RES: _RES,
-    OPCodes.OP_LEA: _LEA
+    OPCodes.BR: _BR,
+    OPCodes.ADD: _ADD,
+    OPCodes.LD: _LD,
+    OPCodes.ST: _ST,
+    OPCodes.JSR: _JSR,
+    OPCodes.AND: _AND,
+    OPCodes.LDR: _LDR,
+    OPCodes.STR: _STR,
+    OPCodes.RTI: _RTI,
+    OPCodes.NOT: _NOT,
+    OPCodes.LDI: _LDI,
+    OPCodes.STI: _STI,
+    OPCodes.JMP: _JMP,
+    OPCodes.RES: _RES,
+    OPCodes.LEA: _LEA,
+    OPCodes.TRAP: _TRAP
 }
 
 
 def _instruction_routine(instruction):
     _opcode = opcode(instruction)
-    if _opcode == OPCodes.OP_TRAP.value:  # oh snap, it's a trap!
-        return lambda: trap_routine(trapcode(instruction))
-    return lambda: _instructions[OPCodes(_opcode)](instruction)  # phew!
+    # print(OPCodes(_opcode))
+    return lambda: _instructions[OPCodes(_opcode)](instruction)
 
 
 def execute(instruction):
     _instruction_routine(instruction)()
-    # increment PC by #1.
-    reg_write(Registers.PC, reg_read(Registers.PC) + 1)

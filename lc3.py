@@ -25,6 +25,8 @@ def main():
         while True:
             pc = reg_read(Registers.PC)
             instruction = mem_read(pc)
+            # increment PC by #1.
+            reg_write(Registers.PC, reg_read(Registers.PC) + 1)
             execute(instruction)
     except Halt:  # TODO
         print('Halted.')
