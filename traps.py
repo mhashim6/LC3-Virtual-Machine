@@ -1,5 +1,5 @@
 from memory import mem_read, mem_write, Registers, reg_read, reg_write
-from utils import sign_extend, ushort
+from utils import sign_extend
 from enum import Enum
 from platform_getch import getch
 import sys
@@ -14,7 +14,7 @@ class Halt(Exception):
 def _GETC():
     """get character from keyboard"""
     ch = getch()
-    reg_write(Registers.R0, ushort(ord(ch)))
+    reg_write(Registers.R0, ord(ch))
 
 
 def _OUT():
@@ -42,7 +42,7 @@ def _IN():
     i = reg_read(Registers.R0)
     for ch in ch_arr:
         if chr(ch) != '\0':
-            mem_write(ushort(i), ushort(ch))
+            mem_write(i, ch)
             i += 1
         else:
             break
@@ -57,7 +57,7 @@ def _IN():
 def _PUTSP():
     """output a byte string"""
     for i in range(Registers.R0, (2**16)):
-        c = mem_read(ushort(i))
+        c = mem_read(i)
         if chr(c) == '\0':
             break
         sys.stdout.write(chr(c & 0xFF))

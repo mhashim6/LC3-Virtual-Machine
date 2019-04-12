@@ -1,7 +1,6 @@
 from control_unit import execute
 from traps import Halt
 from memory import mem_read, mem_write, reg_read, reg_write, Registers, load_image
-from utils import ushort
 import array
 import sys
 
@@ -18,7 +17,7 @@ def read_Rom_file(name):
 
 
 def main():
-    reg_write(Registers.PC, ushort(PC_START))
+    reg_write(Registers.PC, PC_START)
     rom = read_Rom_file(input('Enter filename: '))
     load_image(rom)
 
