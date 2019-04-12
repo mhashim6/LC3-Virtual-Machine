@@ -25,8 +25,7 @@ def _BR(instruction):
     pc_offset = sign_extend((instruction) & 0x1ff, 9)
     cond_flag = (instruction >> 9) & 0x7
     if cond_flag & reg_read(Registers.COND):
-        reg_write(Registers.PC, ushort(reg_read(Registers.PC) + pc_offset))
-
+        reg_write(Registers.PC, (reg_read(Registers.PC) + pc_offset))
 
 
 def _ADD(instruction):
@@ -36,14 +35,15 @@ def _ADD(instruction):
     # first operand SR1
     SR1 = (instruction >> 6) & 0x7
     # for immediate mode
-    imm_flag = (instruction >>5) & 0x1
+    imm_flag = (instruction >> 5) & 0x1
 
     if imm_flag:
         imm5 = sign_extend(instruction & 0x1F, 5)
-        reg_write(Registers(DR), ushort(reg_read(Regisers(SR1)) + imm5))
+        reg_write(Registers(DR), reg_read(Regisers(SR1)) + imm5)
     else:
         SR2 = instruction & 0x7
-        reg_write(Registers(DR), ushort(reg_read(Registers(SR1)) + reg_read(Registers(SR2))))
+        reg_write(Registers(DR), reg_read(
+            Registers(SR1)) + reg_read(Registers(SR2)))
 
     update_flags(DR)
 
@@ -52,7 +52,7 @@ def _LD(instruction):
     """load"""
     DR = (instruction >> 9) & 0x7
     pc_offset = sign_extend(instruction & 0x1ff, 9)
-    reg_write(Registers(DR),  mem_read(ushort(reg_read(Regisers.PC) + pc_offset)))
+    reg_write(Registers(DR),  mem_read(reg_read(Regisers.PC) + pc_offset))
     update_flags(DR)
 
 
@@ -60,7 +60,7 @@ def _ST(instruction):
     """store"""
     DR = (instruction >> 9) & 0x7
     pc_offset = sign_extend(instruction & 0x1ff, 9)
-    mem_write(ushort(reg_read(Registers.PC) + pc_offset), Registers(DR))
+    mem_write(reg_read(Registers.PC) + pc_offset), Registers(DR)
 
 
 def _JSR(instruction):
@@ -118,7 +118,7 @@ def _LEA(instruction):
     """load effective address"""
     dr = (instruction >> 9) & 0x7
     pc_offset = sign_extend(instruction & 0x1ff, 9)
-    address = ushort(pc_offset + reg_read(Registers.PC))
+    address = pc_offset + reg_read(Registers.PC)
     reg_write(Registers(dr), address)
     update_flags(dr)
 
@@ -171,4 +171,4 @@ def _instruction_routine(instruction):
 def execute(instruction):
     _instruction_routine(instruction)()
     # increment PC by #1.
-    reg_write(Registers.PC, ushort(reg_read(Registers.PC) + 1))
+    reg_write(Registers.PC, reg_read(Registers.PC) + 1)
