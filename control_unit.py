@@ -80,7 +80,7 @@ def _NOT(instruction):
 
 
 def _LDI(instruction):
-    DR = ((instruction) >> 9) & 0x7                                # Destenation Register.
+    DR = (instruction >> 9) & 0x7                                # Destenation Register.
     PCoffset = sign_extend((instruction) & 0X1ff, 9)               # the value of what called an offset (embedded within the instruction code).
     address = reg_read(Registers.PC) + PCoffset                    # the address of the address of the desired data.
     reg_write(Registers(DR), mem_read(mem_read(address)))          # write the data (its address is explained in the previous line) in the register (DR).
