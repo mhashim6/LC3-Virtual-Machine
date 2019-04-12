@@ -73,7 +73,7 @@ def _RTI(instruction):
 
 def _NOT(instruction):
     DR = (instruction >> 9) & 0X7                                # Destination Register.
-    SR = ((instruction) >> 6) & 0X7                                # Source Register (register cntaining the data).
+    SR = (instruction >> 6) & 0X7                                # Source Register (register cntaining the data).
     reg_write(Registers(DR), ~reg_read(Registers(SR)))             # every bit in the DR will equal to the flipped one with the same index in SR. 
     update_flags(DR)                                               # store the sign of the last excuted instruction data (which is in the DR).
     
