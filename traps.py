@@ -3,7 +3,6 @@ from utils import sign_extend
 from enum import Enum
 from platform_getch import getch
 import sys
-import kbhit
 
 
 class Halt(Exception):
@@ -69,7 +68,6 @@ def _PUTSP():
 
 def _HALT():
     """halt the program"""
-    kbhit.terminate()
     raise Halt()
 
 
