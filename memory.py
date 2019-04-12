@@ -22,13 +22,15 @@ def load_image(image):
 
 
 def mem_write(address, value):
-    _main_memory[address] = value % _MEMORY_SIZE
+    _main_memory[address % _MEMORY_SIZE] = value % _MEMORY_SIZE
 
 
 def mem_read(address):
+    address = address % _MEMORY_SIZE
     if address == MMR.KBSR.value:
-        mem_write(MMR.KBSR.value, (1 << 15))
-        mem_write(MMR.KBDR.value, ord(getch()))
+        if check_key():
+            mem_write(MMR.KBSR.value, (1 << 15))
+            mem_write(MMR.KBDR.value, ord(getch()))
     else:
         mem_write(MMR.KBSR.value, 0)
 
