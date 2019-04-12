@@ -65,14 +65,7 @@ def _ST(instruction):
 
 def _JSR(instruction):
     """jump register"""
-    r1 = (instruction >> 6) & 0x7
-    long_pc_offset = sign_extend(instruction & 0x7ff, 11)
-    long_flag = (instruction >> 11) & 1
-    reg_write(Registers.R7, reg_read(Registers.PC))
-    if long_flag:
-        reg_write(Registers.PC, reg_read(Registers.PC) + long_pc_offset)
-    else:
-        reg_write(Registers.PC, reg_read(Registers(r1)))
+    pass
 
 
 def _AND(instruction):
