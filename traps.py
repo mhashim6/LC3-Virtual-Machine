@@ -56,7 +56,7 @@ def _IN():
 
 def _PUTSP():
     """output a byte string"""
-    for i in range(Registers.R0, (2**16)):
+    for i in range(reg_read(Registers.R0), (2**16)):
         c = mem_read(i)
         if chr(c) == '\0':
             break
