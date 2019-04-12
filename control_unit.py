@@ -84,23 +84,33 @@ def _STR(instruction):
 
 
 def _RTI(instruction):
-    """unused"""
-    pass  # TODO throw exception here.
+    raise Exception("instruction is not implemented !")
+    
 
 
 def _NOT(instruction):
-    """bitwise not"""
-    pass
+    DR = (instruction >> 9) & 0X7                                # Destination Register.
+    SR = (instruction >> 6) & 0X7                                # Source Register (register cntaining the data).
+    reg_write(Registers(DR), ~reg_read(Registers(SR)))             # every bit in the DR will equal to the flipped one with the same index in SR. 
+    update_flags(DR)                                               # store the sign of the last excuted instruction data (which is in the DR).
+    
 
 
 def _LDI(instruction):
-    """load indirect"""
-    pass
+    DR = (instruction >> 9) & 0x7                                # Destenation Register.
+    PCoffset = sign_extend((instruction) & 0X1ff, 9)               # the value of what called an offset (embedded within the instruction code).
+    address = reg_read(Registers.PC) + PCoffset                    # the address of the address of the desired data.
+    reg_write(Registers(DR), mem_read(mem_read(address)))          # write the data (its address is explained in the previous line) in the register (DR).
+    update_flags(DR)                                               # store the sign of the last excuted instruction data (which is in the DR).
+    
 
 
 def _STI(instruction):
-    """store indirect"""
-    pass
+    SR = (instruction >> 9) & 0x7                                # Source Register (the register containing the data).
+    PCoffset = sign_extend((instruction) & 0x1ff, 9)               # the value of what called an offset (embedded within the instruction code).
+    address = reg_read(Registers.PC) + PCoffset                    # the address of the address that the data will be stored at.
+    mem_write(mem_read(address), reg_read(Registers(SR)))          # write the data (stored in the SR) into the memory (the address is explained in the previous line).
+    
 
 
 def _JMP(instruction):

@@ -12,9 +12,9 @@ This is a Python implementation of the LC-3 virtual machine.
 - [ ] Bitwise AND
 - [ ] Load register
 - [ ] Store register
-- [ ] Bitwise NOT
-- [ ] Load indirect
-- [ ] Store indirect
+- [x] Bitwise NOT
+- [x] Load indirect
+- [x] Store indirect
 - [x] Jump
 - [x] Reserved
 - [x] Load effective address
