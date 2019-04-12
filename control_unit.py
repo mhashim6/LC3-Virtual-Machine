@@ -89,7 +89,7 @@ def _LDI(instruction):
 
 
 def _STI(instruction):
-    SR = ((instruction) >> 9) & 0x7                                # Source Register (the register containing the data).
+    SR = (instruction >> 9) & 0x7                                # Source Register (the register containing the data).
     PCoffset = sign_extend((instruction) & 0x1ff, 9)               # the value of what called an offset (embedded within the instruction code).
     address = reg_read(Registers.PC) + PCoffset                    # the address of the address that the data will be stored at.
     mem_write(mem_read(address), reg_read(Registers(SR)))          # write the data (stored in the SR) into the memory (the address is explained in the previous line).
