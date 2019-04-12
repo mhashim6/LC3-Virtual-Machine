@@ -1,7 +1,6 @@
 from control_unit import execute
 from traps import Halt
 from memory import mem_read, mem_write, reg_read, reg_write, Registers, load_image
-from utils import ushort
 import array
 import sys
 
@@ -10,7 +9,7 @@ PC_START = 0x3000
 
 def read_Rom_file(name):
     rom = array.array('H', range(0))
-    with open(name) as file:
+    with open(name, 'br') as file:
         rom.frombytes(file.read())
         if sys.byteorder == 'little':
             rom.byteswap()
@@ -18,7 +17,7 @@ def read_Rom_file(name):
 
 
 def main():
-    reg_write(Registers.PC, ushort(PC_START))
+    reg_write(Registers.PC, PC_START)
     rom = read_Rom_file(input('Enter filename: '))
     load_image(rom)
 
