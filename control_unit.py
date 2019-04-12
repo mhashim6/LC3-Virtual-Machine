@@ -67,22 +67,33 @@ def _STR(instruction):
 
 
 def _RTI(instruction):
-    """unused"""
-    pass  # TODO throw exception here.
+    raise Exception("instruction is not implemented !")
+    pass  
 
 
 def _NOT(instruction):
-    """bitwise not"""
+    DR = (_NOT(instruction) >> 9) & 0X7                            # Destenation Register.
+    SR = (_NOT(instruction) >> 6) & 0X7                            # Source Register (register cntaining the data).
+    for B in range (16):                                           # B stands (in this line) for Bit.
+        reg_read(Registers(DR))[B] = ~reg_read(Registers(SR))[B]   # make every B in DR equals to the flip of the B in the same index in SR.   
+    update_flags(DR)                                               # store the sign of the last excuted instruction data (which is in the DR).
     pass
 
 
 def _LDI(instruction):
-    """load indirect"""
+    DR = (_LDI(instruction) >> 9) & 0x7                            # Destenation Register.
+    PCoffset = sign_extend(_LDI(instruction) & 0X1ff, 7)           # the value of what called an offset (embedded within the instruction code).
+    address = reg_read(Registers.PC) + PCoffset                    # the address of the desired data.
+    reg_write(Registers(DR), mem_read(address))                    # write the data (stored in the address) in the register (DR).
+    update_flags(DR)                                               # store the sign of the last excuted instruction data (which is in the DR).
     pass
 
 
 def _STI(instruction):
-    """store indirect"""
+    SR = (_STI(instruction) >> 9) & 0x7                            # Source Register (the register containing the data).
+    PCoffset = sign_extend(_LDI(instruction) & 0xff1, 7)           # the value of what called an offset (embedded within the instruction code).
+    address = reg_read(Registers.PC) + PCoffset                    # the address that the data will be stored at.
+    mem_write(address, reg_read(Registers(SR)))                    # write the data (stored in the SR) into the memory (specifically at "address").
     pass
 
 
