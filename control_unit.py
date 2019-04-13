@@ -1,4 +1,4 @@
-from memory import *
+from memory import mem_read, mem_write, reg_read, reg_write, Registers
 from utils import *
 from enum import Enum
 from traps import trap_routine
