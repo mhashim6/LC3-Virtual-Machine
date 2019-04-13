@@ -60,27 +60,59 @@ def _ST(instruction):
     """store"""
     DR = (instruction >> 9) & 0x7
     pc_offset = sign_extend(instruction & 0x1ff, 9)
-    mem_write(reg_read(Registers.PC) + pc_offset), reg_read(Registers(DR))
+    mem_write( reg_read(Registers.PC) + pc_offset , reg_read(Registers(DR)))
 
 
+#updates PC value by offset or new value
 def _JSR(instruction):
     """jump register"""
-    pass
-
+    pc_reg = reg_read(Registers.PC)    #read current pc value
+    reg_write(Registers.R7 , pc_reg)   #R7=current pc is the linkage back to the calling routine
+    #check bit 11 if 1 or 0
+    if ( (instruction >> 11) & 0x0001 ) == 1 :
+        PCoffset = sign_extend(instruction & 0x07FF,11) #compute and extend the immediate offset
+        reg_write(Registers.PC , PCoffset+pc_reg )  #update pc value by adding offset
+        
+    else :
+        baseREG = (instruction >> 6) & 0x0007
+        reg_value = reg_read(Registers(baseREG) ) #read value in base register
+        reg_write(Registers.PC , reg_value ) #update pc value by new value
+       
 
 def _AND(instruction):
     """bitwise and"""
-    pass
-
-
+    dis_reg =  (instruction >> 9) & 0x0007              #compute the index of distination register
+    source1 =  (instruction >>6) & 0x0007              #compute the index of source1 register
+    
+    if (instruction  & 0x0020) >= 1 :                 #check bit 6 
+        imm5 = sign_extend(instruction & 0x001F , 5)  #compute and extend the immediate value
+        value =reg_read( Registers(source1) ) & imm5  #compute output value in case bit6 == 1
+        reg_write(Registers(dis_reg) , value)          #update dist ination register value
+    else :
+        source2 =  instruction & 0x0007                #compute the index of source2 register
+        value =  reg_read( Registers(source1)) &  reg_read(Registers(source2))   #compute output value in case bit6 == 0
+        reg_write(Registers(dis_reg) , value)            #update dist ination register value
+       
+        
 def _LDR(instruction):
     """load register"""
-    pass
+    dis_reg = (instruction >> 9) & 0x0007            #compute the index of distination register
+    BaseR   = (instruction >> 6) &0x0007             #compute the index of BaseR register
+    offset6 = sign_extend(instruction & 0x003F , 6)  #compute and extention offset6 value
+    mem_addresse = reg_read(Registers(BaseR)) + offset6   #compute memory addresse
+    value = mem_read(mem_addresse)                        #read the memory storage value
+    reg_write(Registers(dis_reg) , value)                 #write value to distination register  
+    update_flags(dis_reg)                                 #update flags  
 
 
 def _STR(instruction):
     """store register"""
-    pass
+    SR_reg = (instruction >> 9) & 0x0007                #compute the index of source register
+    BaseR   = (instruction >> 6) &0x0007                #compute the index of BaseR registe
+    offset6 = sign_extend(instruction & 0x003F , 6)     #compute and extention offset6 value
+    value = reg_read( Registers(SR_reg) )               #read the new memory storage value
+    mem_addresse = reg_read( Registers(BaseR) ) + offset6   #compute memory addresse
+    mem_write(mem_addresse , value)                         #write new value to memory
 
 
 def _RTI(instruction):
