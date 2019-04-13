@@ -11,7 +11,8 @@ class Halt(Exception):
 
 
 def _GETC():
-    """get character from keyboard"""
+    """get character from keyboard,
+     character is not echoed onto the console. """
     ch = getch()
     reg_write(Registers.R0, ord(ch))
 
@@ -33,7 +34,7 @@ def _PUTS():
 
 
 def _IN():
-    """input a string"""
+    """input a single character, echoed onto the console"""
     sys.stdout.write("Enter a character: ")
     sys.stdout.flush()
     reg_write(Registers.R0, sys.stdout.read(1))
