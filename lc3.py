@@ -17,8 +17,12 @@ def read_Rom_file(name):
 
 
 def main():
+    if len(sys.argv) < 2:
+        print('Usage: python3 lc3.py [obj-file]')
+        exit(2)
+
     reg_write(Registers.PC, PC_START)
-    rom = read_Rom_file(input('Enter filename: '))
+    rom = read_Rom_file(sys.argv[1])
     load_image(rom)
 
     try:
