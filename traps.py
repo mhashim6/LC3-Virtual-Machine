@@ -36,7 +36,7 @@ def _IN():
     """input a single character, echoed onto the console"""
     sys.stdout.write("Enter a character: ")
     sys.stdout.flush()
-    reg_write(Registers.R0, sys.stdout.read(1))
+    reg_write(Registers.R0, ord(sys.stdin.read(1)))
 
 
 def _PUTSP():
