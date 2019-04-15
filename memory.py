@@ -13,11 +13,18 @@ class MMR:
 
 
 def load_image(image):
-    origin = image[0]
-    # starting from #1 as we've already read #0, aka the origin,
-    # which indicates the starting address of the program in memory.
-    for i in range(1, len(image)):
-        mem_write(origin + i, image[i])
+    global _main_memory
+    # load the origin, which indicates the starting address of the
+    # program in memory.
+    origin = int.from_bytes(image.read(2), byteorder='big')
+    _main_memory = array.array("H", [0] * origin)
+    # load actual program instructions in the origin address.
+    max_read = _MEMORY_SIZE - origin
+    _main_memory.frombytes(image.read(max_read))
+    # swap loaded bytes, as LC-3 is big-endian.
+    _main_memory.byteswap()
+    # fill the rest of the memory with zeros.
+    _main_memory.fromlist([0] * (_MEMORY_SIZE - len(_main_memory)))
 
 
 def mem_write(address, value):

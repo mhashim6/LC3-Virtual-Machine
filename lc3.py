@@ -9,11 +9,8 @@ PC_START = 0x3000
 
 def read_Rom_file(name):
     rom = array.array('H', range(0))
-    with open(name, 'br') as file:
-        rom.frombytes(file.read())
-        if sys.byteorder == 'little':
-            rom.byteswap()
-    return rom
+    with open(name, 'br') as image:
+        load_image(image)
 
 
 def main():
