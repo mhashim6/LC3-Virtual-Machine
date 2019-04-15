@@ -1,6 +1,5 @@
 from memory import mem_read, mem_write, Registers, reg_read, reg_write
 from utils import sign_extend
-from enum import Enum
 from getch import getch
 import sys
 
@@ -58,7 +57,7 @@ def _HALT():
     raise Halt()
 
 
-class Traps(Enum):
+class Traps:
     GETC = 0x20    # get character from keyboard
     OUT = 0x21     # output a character
     PUTS = 0x22    # output a word string
@@ -78,4 +77,4 @@ _traps = {
 
 
 def trap_routine(code):
-    return _traps[Traps(code)]
+    return _traps[code]

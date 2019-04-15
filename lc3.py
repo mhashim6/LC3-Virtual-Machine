@@ -22,8 +22,7 @@ def main():
         exit(2)
 
     reg_write(Registers.PC, PC_START)
-    rom = read_Rom_file(sys.argv[1])
-    load_image(rom)
+    read_Rom_file(sys.argv[1])
 
     try:
         while True:
