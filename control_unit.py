@@ -102,6 +102,7 @@ def _AND(instruction):
         # update dist ination register value
         reg_write(dis_reg, value)
 
+    update_flags(dis_reg)
 
 def _LDR(instruction):
     """load register"""
